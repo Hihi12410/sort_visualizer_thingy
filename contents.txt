@@ -1,0 +1,5 @@
+'out'="main"
+'main'="main.c"
+'deps'="sort.c" "essentials.c" "test.c"
+'libs'="SDL"
+#Comment#   

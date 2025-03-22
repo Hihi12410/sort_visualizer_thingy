@@ -1,0 +1,6 @@
+Already logging to log.out.
+No hardware breakpoint support in the target.
+Breakpoint 1 at 0x1070
+Type commands for breakpoint(s) 1, one per line.
+End with a line saying just "end".
+(gdb) 
