@@ -4,16 +4,6 @@
 //TODO : Build-system
 
 
-char * freeStorage(char * store, int storeSize) 
-{
-    for (int i =0; i < storeSize; ++i) 
-    {
-        store[i] = '\0';
-    }
-
-    return store;
-}
-
 int main(int argc, char ** argv) 
 {
     if (argc < 2) return -1;

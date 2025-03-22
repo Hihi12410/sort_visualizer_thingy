@@ -1,19 +1,6 @@
 #include "essentials.h"
 
 //Memory safe array
-//Deprecated
-inline memptr makeListPtr_depr(void * dataType, bigptr startSize)
-{
-    void * arr = malloc(sizeof(dataType) * startSize);
-    if (arr == NULL) return (memptr) NULL; 
-    return (memptr)arr;
-}
-
-inline void freeListPtr_depr(memptr list)
-{
-    free(TOPOINTER(list));
-}
-
 //Prod
 inline void * makeListPtr(void * dataType, bigptr startSize)
 {
@@ -24,7 +11,7 @@ inline void * makeListPtr(void * dataType, bigptr startSize)
 
 inline void freeListPtr(void * list)
 {
-    free(list);
+    if (list != NULL) free(list);
 }
 
 
@@ -36,7 +23,7 @@ inline void* makeList(void * dataType, bigptr startSize)
 
 inline void freeList(void* list)
 {
-    free(list);
+    if (list!=NULL) free(list);
 }
 
 
@@ -53,7 +40,10 @@ inline int max_int(int a, int b)
 }
 
 //String comparison
-// 0 : false ; 1 : true
+
+
+
+//Does not count the null pointer
 inline bigptr stringLen(char * str) 
 {
     //Error handling
@@ -63,16 +53,17 @@ inline bigptr stringLen(char * str)
     bigptr i = 0;
     
     //Lazy counting && overflow protection
-    while(curr != '\0' && i <= STRINGLEN_MAX_ITER)
+    while(curr != '\0' && i < STRINGLEN_MAX_ITER)
     {
         ++i;
         curr = str[i];
     }
 
     //Possible overflow
-    if (i == STRINGLEN_MAX_ITER) return -1;
+    if (i == STRINGLEN_MAX_ITER-1) return -1;
     return i;
 }
+// 0 : false ; 1 : true
 inline int stringComp(char * a, char * b) 
 {
     bigptr a_size = stringLen(a);
@@ -133,12 +124,54 @@ inline char * stringConcat(char * a, char * b)
 
 
 //Caches
-inline cache makeCache(bigptr desiredsize)
+
+int __realloc_cache(cache * store, bigptr new_size) 
+{
+    void *ptr = realloc(store->data, new_size);
+    if (ptr == NULL) return -1;
+    store->data = ptr;
+    store->len = new_size;
+    return 0;
+}
+
+inline cache * makeCache(bigptr desiredsize)
 {
     void*ptr = malloc(desiredsize);
-    if (ptr == NULL) return ERRORCACHE;
+    if (ptr == NULL) return NULL;
 
-    return (cache) {desiredsize, 0, ptr};
+    cache * ret = malloc(sizeof(cache));
+    if (ret == NULL) 
+    { free(ptr); return NULL; }
+    
+    ret->data = ptr;
+    ret->pointer = 0;
+    ret->len = desiredsize;
+
+    return ret;
 }
-inline cache writeCache(cache cont,void * data);
-inline cache cleanCache(cache cont);
+
+inline int writeCache(cache * cont,void * data, bigptr data_size)
+{
+    if (data_size+cont->pointer > cont->len)
+    {
+        if (__realloc_cache(cont, cont->pointer + data_size) == -1) return -1;
+    }
+    for (bigptr i = 0; i < data_size; ++i) 
+    {
+        ((char *)cont->data)[i+cont->pointer] = ((char *)data)[i];
+    }
+    cont->pointer+=data_size;
+    return 0;
+}
+inline void cleanCache(cache * cont)
+{
+    if (cont == NULL) return;
+    
+    if (cont->data != NULL)
+    {
+        free(cont->data);
+        cont->data = NULL;
+    }
+    
+    free(cont);
+}

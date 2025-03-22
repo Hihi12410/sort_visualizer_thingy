@@ -22,7 +22,7 @@ static void test()
 
     printf("\n\n");
 
-    char b[13] = "Hello World!";
+    char b[13] = "Hello World ";
     char c[13] = "hello world!";
     char d[4] = "hi!";
 
@@ -58,7 +58,48 @@ void testList()
     free(g);
 }
 
+void testcache() 
+{
+    cache * a = makeCache(4 * sizeof(char));
+    char hello[5] = {'h', 'e', 'l', 'l', 'o'};
+    char term = '\0';
+
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, hello, 5);
+    writeCache(a, &term, 1);
+
+    //works yippeeee
+
+    printf("\n%s\n", (char*)a->data),
+
+    cleanCache(a);
+}
+
+
 int main(int argc, char ** argv) 
 { 
-    testList();
+    testcache();
 }

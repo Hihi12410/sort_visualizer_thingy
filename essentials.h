@@ -1,3 +1,5 @@
+#pragma once
+
 #include "stdlib.h"
 #include "stddef.h"
 #include "stdio.h"
@@ -7,7 +9,10 @@
 typedef unsigned long memptr;
 
 //Array pointer type (no need for bigptr)
-typedef unsigned long long bigptr;
+typedef unsigned long long bigptr_depr;
+
+//Theoritically biggest object (en.cppreference.com)
+typedef typeof(sizeof(0)) bigptr;
 
 //Cache object
 typedef struct cache
@@ -50,6 +55,6 @@ char * stringConcat(char * a, char * b);
 
 #define ERRORCACHE (cache) {-1, -1, NULL}
 
-cache makeCache(bigptr desiredsize);
-cache writeCache(cache cont,void * data);
-cache cleanCache(cache cont);
+cache * makeCache (bigptr desiredsize);
+int writeCache(cache * cont,void * data, bigptr data_size);
+void cleanCache(cache * cont);
