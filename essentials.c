@@ -140,5 +140,5 @@ inline cache makeCache(bigptr desiredsize)
 
     return (cache) {desiredsize, 0, ptr};
 }
-cache writeCache(cache cont,void * data);
-cache cleanCache(cache cont);
+inline cache writeCache(cache cont,void * data);
+inline cache cleanCache(cache cont);

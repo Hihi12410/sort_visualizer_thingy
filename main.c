@@ -1,6 +1,5 @@
 #include "sort.h"
 #include "essentials.h"
-#include <stdio.h>
 
 static void test() 
 {
@@ -37,11 +36,11 @@ static void test()
 
 void testList() 
 {
-    memptr a = makeListPtr(DATATYPE(long), 10);
-    memptr b = makeListPtr(DATATYPE(long), 10);
+    //memptr a = makeListPtr(DATATYPE(long), 10);
+    //memptr b = makeListPtr(DATATYPE(long), 10);
 
-    freeListPtr(a);
-    freeListPtr(b);
+    //freeListPtr(a);
+    //freeListPtr(b);
 
     int * c = makeList(DATATYPE(int), 10);
     char * d = makeList(DATATYPE(char), 10);
