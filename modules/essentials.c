@@ -29,14 +29,57 @@ inline void freeList(void* list)
 
 //Maths
 //Mostly macros
-inline int min_int(int a, int b) 
+
+int __min_int(int a, int b)
 {
     return (a < b) ? a : b;
 }
 
-inline int max_int(int a, int b)
+int __max_int(int a, int b)
 {
     return (a > b) ? a : b;
+}
+
+unsigned short __min_ushort(unsigned short a, unsigned short b)
+{
+    return (a < b) ? a : b;
+}
+
+unsigned short __max_ushort(unsigned short a, unsigned short b)
+{
+    return (a > b) ? a : b;
+}
+
+int __clamp_int(int a, int v1, int v2)
+{
+    int min = __min_int(v1, v2);
+    int max = __max_int(v1, v2);
+    
+    if (a < min) return min;
+    if (a > max) return max;
+    
+    return a; 
+}
+
+unsigned short __clamp_ushort(unsigned short a, unsigned short v1, unsigned short v2)
+{
+    unsigned short min = __min_ushort(v1, v2);
+    unsigned short max = __max_ushort(v1, v2);
+    
+    if (a < min) return min;
+    if (a > max) return max;
+    
+    return a; 
+}
+
+inline int min_int(int a, int b) 
+{
+    return __min_int(a, b);
+}
+
+inline int max_int(int a, int b)
+{
+    return __max_int(a, b);
 }
 
 //String comparison
@@ -60,7 +103,7 @@ inline bigptr stringLen(char * str)
     }
 
     //Possible overflow
-    if (i == STRINGLEN_MAX_ITER-1) return -1;
+    if (i == STRINGLEN_MAX_ITER-1) return 0;
     return i;
 }
 // 0 : false ; 1 : true
@@ -134,8 +177,36 @@ int __realloc_cache(cache * store, bigptr new_size)
     return 0;
 }
 
+//Unsafe. Quicker packing, but does not preserve objects.
+void * __pack_cache_nopreserve(cache * a)
+{
+    if (a == NULL || a->data == NULL) return NULL;
+    
+    void * ptr = malloc(a->len);
+    if (ptr == NULL) return NULL;
+
+    bigptr j = 0;
+    for (bigptr i = 0; i < a->len; ++i)
+    {
+        if (((char*)a->data)[i] == 0x0)
+        {
+            ((char*)ptr)[j++] = ((char*)a->data)[i];
+        }
+    }
+
+    ptr = realloc(ptr, j*sizeof(char));
+    if (ptr != NULL) 
+    {
+        a->len = j*sizeof(char);
+        a->pointer = a->len;
+        free(a->data);
+    }
+    return ptr;
+}
+
 inline cache * makeCache(bigptr desiredsize)
 {
+    if (desiredsize == 0) return NULL;
     void*ptr = malloc(desiredsize);
     if (ptr == NULL) return NULL;
 
@@ -165,6 +236,15 @@ inline int writeCache(cache * cont,void * data, bigptr data_size)
 }
 inline void cleanCache(cache * cont)
 {
+    for (int i = 0; i < cont->pointer; ++i)
+    {
+        ((char*)cont->data)[i] = 0x0;
+    }
+    cont->pointer = 0;
+}
+
+inline void freeCache(cache * cont)
+{
     if (cont == NULL) return;
     
     if (cont->data != NULL)
@@ -174,4 +254,13 @@ inline void cleanCache(cache * cont)
     }
     
     free(cont);
+}
+
+inline int shrinkCacheNonPreserve(cache * cont)
+{
+    if (cont->data == NULL || cont == NULL) return -1;
+    void*ptr = __pack_cache_nopreserve(cont);
+    if(ptr == NULL) return -1;
+    cont->data = ptr;
+    return 0;
 }

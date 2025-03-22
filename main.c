@@ -60,44 +60,25 @@ void testList()
 
 void testcache() 
 {
-    cache * a = makeCache(4 * sizeof(char));
-    char hello[5] = {'h', 'e', 'l', 'l', 'o'};
+    cache * a = makeCache(4 * sizeof(char)); // Allocates space for 4 characters
     char term = '\0';
+    char evil_hello[9] = {'e','v','i','l','h', 'e', 'l', 'l', 'o'};
 
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, hello, 5);
-    writeCache(a, &term, 1);
+    // Writing "abcd" 100 times to the cache
+    for (int i = 0; i < 100; ++i) {
+        writeCache(a, "\0\0abcd\0", 8); // Writes 8 bytes each time
+    }
+    shrinkCacheNonPreserve(a); // Shrinks the cache
+    writeCache(a, &term, 1); // Writes the null terminator
+    printf("\n%s\n", (char*)a->data); // Attempts to print the cached data
 
-    //works yippeeee
+    cleanCache(a); // Clears the cache
+    writeCache(a, evil_hello, 9); // Writes "evilhello" to the cache
+    writeCache(a, &term, 1); // Writes the null terminator
+    printf("\n%s\n", (char*)a->data); // Attempts to print the cached data
 
-    printf("\n%s\n", (char*)a->data),
-
-    cleanCache(a);
+    freeCache(a); // Frees the cache
 }
-
 
 int main(int argc, char ** argv) 
 { 

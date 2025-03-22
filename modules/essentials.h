@@ -57,4 +57,8 @@ char * stringConcat(char * a, char * b);
 
 cache * makeCache (bigptr desiredsize);
 int writeCache(cache * cont,void * data, bigptr data_size);
+
 void cleanCache(cache * cont);
+void freeCache(cache * cont);
+//Shrinks cache for memory preservation. Does not preserve memory structures.
+int shrinkCacheNonPreserve(cache * cont);

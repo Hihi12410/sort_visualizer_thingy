@@ -34,12 +34,6 @@ void __sort_int_arr_bigger(int *list, bigptr size)
     }
 }
 
-/*int __sort_int_arr_smaller_equ(int *list, bigptr size) 
-{}
-int __sort_int_arr_bigger_equ(int *list, bigptr size) 
-{}*/
-
-
 //As defined in header file
 inline int sortIntArray(char * mode, int * list,bigptr size) 
 {
